@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>아리아펫 쇼츠</title>
+  <meta name="theme-color" content="#f9e000">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-title" content="아리아펫 쇼츠">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <img src="logo.jpg" alt="ARIA.PET" class="logo">
+    <div>
+      <h1>펫로스 위로 쇼츠</h1>
+      <p class="sub">아리아펫과 함께하는 30초 세로 영상</p>
+    </div>
+  </header>
+
+  <ol class="steps" id="steps">
+    <li class="on">사진·영상</li><li>문구</li><li>완성</li>
+  </ol>
+
+  <main>
+    <!-- 1단계: 사진·영상 -->
+    <section class="card" data-step="1">
+      <h2>1. 아이의 사진과 영상을 올려 주세요</h2>
+
+      <label class="field">반려동물 이름 <span class="opt">(선택)</span>
+        <input id="petName" type="text" placeholder="예: 보리" maxlength="10">
+      </label>
+
+      <div class="field">사진·영상 <span class="opt">(최대 6개, 올린 순서대로 나옵니다)</span>
+        <div class="thumbs" id="thumbs"></div>
+        <label class="upload">
+          <input id="files" type="file" accept="image/*,video/*" multiple hidden>
+          ＋ 사진·영상 고르기
+        </label>
+        <p class="hint small">사진은 이 기기 안에서만 쓰이고 어디에도 전송되지 않습니다. 비워 두면 따뜻한 색 배경으로 만듭니다.</p>
+      </div>
+
+      <label class="check">
+        <input id="consent" type="checkbox">
+        고객 반려동물의 사진·이름을 쓰는 경우, 보호자 동의를 받았습니다.
+      </label>
+
+      <button class="primary" id="toText">다음: 문구 확인</button>
+    </section>
+
+    <!-- 2단계: 문구 -->
+    <section class="card" data-step="2" hidden>
+      <h2>2. 영상에 들어갈 문구</h2>
+      <p class="hint">그대로 써도 되고, 고쳐도 됩니다. 줄을 바꾸면 영상에서도 줄이 바뀝니다.</p>
+      <div id="texts"></div>
+      <div class="row">
+        <button class="ghost" data-back="1">이전</button>
+        <button class="primary" id="toMake">다음: 영상 만들기</button>
+      </div>
+    </section>
+
+    <!-- 3단계: 미리보기·만들기 -->
+    <section class="card" data-step="3" hidden>
+      <h2>3. 미리 보고 만들기</h2>
+      <canvas id="stage" class="stage" width="720" height="1280"></canvas>
+      <div class="bar"><div id="barFill"></div></div>
+      <div class="row">
+        <button class="ghost" id="preview">▶ 미리보기</button>
+        <button class="primary" id="make">영상 파일 만들기</button>
+      </div>
+      <p class="hint small" id="makeHint">미리보기는 소리가 나옵니다. 영상 파일 만들기는 30초 동안 실제로 재생하면서 녹화하니, 그동안 이 화면을 켜 두세요.</p>
+      <a id="download" class="primary link" hidden>영상 내려받기</a>
+      <button class="ghost wide" id="share" hidden>카카오톡·갤러리로 보내기</button>
+      <button class="ghost wide" data-back="2">이전</button>
+    </section>
+  </main>
+
+  <script src="video.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

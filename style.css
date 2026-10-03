@@ -1,0 +1,72 @@
+/* 아리아펫 브랜드: 로고 노랑 + 짙은 먹색, 추모 영상에 맞게 차분한 바탕 */
+:root {
+  --brand: #f9e000;
+  --ink: #23282b;
+  --bg: #f7f5f0;
+  --card: #ffffff;
+  --muted: #6b6f72;
+  --line: #e4e0d6;
+  --soft: #fffbd6;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: "Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  font-size: 16px; line-height: 1.5;
+}
+.top { display: flex; align-items: center; gap: 12px; padding: 16px; max-width: 640px; margin: 0 auto; }
+.logo { width: 52px; height: 52px; border-radius: 12px; }
+h1 { font-size: 20px; margin: 0; }
+.sub { margin: 0; color: var(--muted); font-size: 14px; }
+
+.steps { display: flex; list-style: none; padding: 0 16px; margin: 8px auto 12px; max-width: 640px; gap: 6px; }
+.steps li { flex: 1; text-align: center; font-size: 13px; color: var(--muted); padding-top: 8px; border-top: 4px solid var(--line); }
+.steps li.on { color: var(--ink); font-weight: 700; border-color: var(--ink); }
+.steps li.done { border-color: var(--brand); }
+
+main { max-width: 640px; margin: 0 auto; padding: 0 16px 40px; }
+.card { background: var(--card); border-radius: 16px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+h2 { font-size: 18px; margin: 0 0 16px; }
+.hint { color: var(--muted); font-size: 14px; margin: -8px 0 16px; }
+.hint.small { font-size: 13px; margin: 8px 0 0; }
+.field { display: block; margin-bottom: 18px; font-weight: 600; font-size: 15px; }
+.opt { color: var(--muted); font-weight: 400; font-size: 13px; }
+input[type=text], textarea {
+  width: 100%; margin-top: 6px; padding: 12px; font: inherit; font-weight: 400;
+  border: 1px solid var(--line); border-radius: 10px; background: #fff;
+}
+textarea { resize: vertical; }
+
+.thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+.thumbs:empty { display: none; }
+.thumb { position: relative; aspect-ratio: 9 / 16; border-radius: 10px; overflow: hidden; background: var(--line); }
+.thumb img, .thumb video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb button {
+  position: absolute; top: 6px; right: 6px; width: 28px; height: 28px; border-radius: 50%;
+  border: none; background: rgba(0,0,0,.6); color: #fff; font-size: 18px; line-height: 1; cursor: pointer;
+}
+.thumb .tag { position: absolute; left: 6px; bottom: 6px; background: var(--ink); color: var(--brand); font-size: 11px; padding: 2px 6px; border-radius: 6px; }
+.upload {
+  display: block; margin-top: 8px; padding: 18px; text-align: center; cursor: pointer; font-weight: 700;
+  border: 2px dashed var(--line); border-radius: 12px; background: var(--soft);
+}
+
+.check { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; margin: 4px 0 20px; color: var(--muted); }
+.check input { margin-top: 4px; width: 18px; height: 18px; flex: none; }
+
+button.primary, button.ghost, a.primary {
+  font: inherit; font-weight: 700; cursor: pointer; border-radius: 12px; padding: 14px; width: 100%;
+  display: block; text-align: center; text-decoration: none;
+}
+.primary { background: var(--ink); color: var(--brand); border: none; }
+.primary:disabled, .ghost:disabled { opacity: .35; cursor: not-allowed; }
+.ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
+a.link { margin-top: 12px; }
+button.wide { margin-top: 10px; }
+.row { display: flex; gap: 8px; margin-top: 8px; }
+.row > * { flex: 1; }
+
+.stage { display: block; width: min(100%, 300px); aspect-ratio: 9 / 16; height: auto; margin: 0 auto; border-radius: 16px; background: var(--brand); }
+.bar { width: min(100%, 300px); height: 4px; margin: 10px auto 12px; background: var(--line); border-radius: 2px; overflow: hidden; }
+.bar div { height: 100%; width: 0; background: var(--ink); }
