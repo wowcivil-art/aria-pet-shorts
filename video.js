@@ -201,6 +201,38 @@ const INNER = { x: PF.side, y: PF.top, w: W - PF.side * 2, h: H - PF.top - PF.bo
 const GOLD = { dark: "#5a3f0a", mid: "#c99a2e", light: "#ffe79a", deep: "#2b1d04" };
 const BLACK = "#0b0b0b";
 
+// ── 액자 바탕색: 검정(기본) · 무지개 7색 단색 · 오로라(천천히 번지는 빛) ──
+const FRAME_BGS = [
+  { id: "black", name: "검정", color: "#0b0b0b" },
+  { id: "red", name: "빨강", color: "#8e1016" },
+  { id: "orange", name: "주황", color: "#b5531a" },
+  { id: "yellow", name: "노랑", color: "#b58a00" },
+  { id: "green", name: "초록", color: "#1b6b35" },
+  { id: "blue", name: "파랑", color: "#1a4a9c" },
+  { id: "navy", name: "남색", color: "#1f2466" },
+  { id: "purple", name: "보라", color: "#5a2578" },
+  { id: "aurora", name: "오로라", aurora: true },
+];
+let frameBg = FRAME_BGS[0];
+function setFrameBg(id) { frameBg = FRAME_BGS.find((b) => b.id === id) || FRAME_BGS[0]; return frameBg; }
+
+// 오로라: 어두운 밤하늘 위에 초록·청록·보라 빛 덩어리가 t(초)에 따라 천천히 흐른다
+const AURORA = [[0.15, 0.12, "#1de9b6"], [0.85, 0.28, "#7c4dff"], [0.5, 0.9, "#00b0ff"], [0.1, 0.72, "#69f0ae"], [0.9, 0.95, "#e040fb"], [0.5, 0.45, "#00e5ff"]];
+function paintFrameBg(ctx, t = 0) {
+  if (!frameBg.aurora) { ctx.fillStyle = frameBg.color; ctx.fillRect(0, 0, W, H); return; }
+  ctx.save();
+  ctx.fillStyle = "#06081a"; ctx.fillRect(0, 0, W, H);
+  ctx.globalCompositeOperation = "lighter";
+  AURORA.forEach(([bx, by, c], i) => {
+    const ph = t * 0.35 + i * 1.3;
+    const x = W * (bx + 0.14 * Math.sin(ph)), y = H * (by + 0.07 * Math.cos(ph * 0.8));
+    const g = ctx.createRadialGradient(x, y, 0, x, y, W * 0.7);
+    g.addColorStop(0, c + "8c"); g.addColorStop(0.45, c + "33"); g.addColorStop(1, c + "00");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  });
+  ctx.restore();
+}
+
 function goldFill(ctx, x0, y0, x1, y1) {
   const g = ctx.createLinearGradient(x0, y0, x1, y1);
   [[0, GOLD.dark], [0.3, GOLD.mid], [0.5, GOLD.light], [0.7, GOLD.mid], [1, GOLD.dark]].forEach(([p, c]) => g.addColorStop(p, c));
@@ -364,18 +396,20 @@ function drawLogoRow(ctx, x0, x1, cy, size = 30, gap = 14) {
 
 // 아래 모서리 네모 틀 + 백합
 function drawCornerPanel(ctx, cx, cy, size) {
-  ctx.fillStyle = BLACK; ctx.fillRect(cx - size / 2, cy - size / 2, size, size);
+  ctx.fillStyle = "rgba(0,0,0,.35)"; ctx.fillRect(cx - size / 2, cy - size / 2, size, size);   // 바탕색 위에 살짝 어둡게
   ctx.strokeStyle = GOLD.mid; ctx.lineWidth = 3; ctx.strokeRect(cx - size / 2, cy - size / 2, size, size);
   ctx.strokeStyle = GOLD.light; ctx.lineWidth = 1; ctx.strokeRect(cx - size / 2 + 5, cy - size / 2 + 5, size - 10, size - 10);
   drawFleur(ctx, cx, cy + 2, size * 0.46);
 }
 
-function drawPalaceFrame(ctx) {
+function drawPalaceFrame(ctx, t = 0) {
   ctx.save(); ctx.globalAlpha = 1;
   const { side: S, top: T, bottom: B } = PF;
-  // 검은 띠
-  ctx.fillStyle = BLACK;
-  ctx.fillRect(0, 0, W, T); ctx.fillRect(0, H - B, W, B); ctx.fillRect(0, 0, S, H); ctx.fillRect(W - S, 0, S, H);
+  // 띠(바탕색) — 안쪽 장면은 가리지 않도록 띠 영역만 클립해서 칠한다
+  ctx.save();
+  ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.rect(S, T, W - 2 * S, H - T - B); ctx.clip("evenodd");
+  paintFrameBg(ctx, t);
+  ctx.restore();
   // 안쪽 테두리 금선 두 줄
   ctx.strokeStyle = GOLD.mid; ctx.lineWidth = 3; ctx.strokeRect(S - 3, T - 3, W - 2 * S + 6, H - T - B + 6);
   ctx.strokeStyle = GOLD.light; ctx.lineWidth = 1; ctx.strokeRect(S - 7, T - 7, W - 2 * S + 14, H - T - B + 14);
@@ -409,7 +443,7 @@ function drawFrame(ctx, t, media, cap) {
   ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.clip();
   drawScene(ctx, t, media, cap);
   ctx.restore();
-  drawPalaceFrame(ctx);
+  drawPalaceFrame(ctx, t);
 }
 
 // ── 배경음악 ────────────────────────────────────────────
@@ -629,4 +663,4 @@ function playShorts(canvas, media, cap, { record = false, onTime, music } = {}) 
   };
 }
 
-window.Shorts = { W, H, TOTAL, drawFrame, playShorts, MUSIC, decodeMusic, previewMusic };
+window.Shorts = { W, H, TOTAL, drawFrame, playShorts, MUSIC, decodeMusic, previewMusic, FRAME_BGS, setFrameBg };

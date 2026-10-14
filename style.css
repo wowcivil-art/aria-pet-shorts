@@ -81,3 +81,11 @@ button.wide { margin-top: 10px; }
 .track small { display: block; color: var(--muted); font-weight: 400; font-size: 12px; }
 .track .listen { font: inherit; font-size: 13px; padding: 6px 10px; border-radius: 8px; white-space: nowrap;
   border: 1.5px solid var(--line); background: #fff; color: var(--ink); cursor: pointer; }
+
+/* 액자 바탕색 고르기 */
+.swatches { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.swatch { width: 60px; height: 52px; border-radius: 12px; border: 2px solid var(--line); cursor: pointer;
+  padding: 0; display: flex; align-items: flex-end; justify-content: center; font: inherit; }
+.swatch small { font-size: 11px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.8); padding-bottom: 4px; }
+.swatch.on { border-color: var(--ink); box-shadow: 0 0 0 2px var(--brand); }
+.swatch.aurora { background: linear-gradient(135deg, #1de9b6, #7c4dff 45%, #00b0ff 70%, #e040fb); }

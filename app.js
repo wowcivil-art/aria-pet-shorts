@@ -156,6 +156,24 @@ $("#musicFile").addEventListener("change", async (e) => {
   renderMusic();
 });
 
+// ── 3단계: 액자 바탕색 고르기 ─────────────────────────
+let frameBgId = "black";
+try { const saved = localStorage.getItem("ariapet.frameBg"); if (saved) frameBgId = saved; } catch {}
+Shorts.setFrameBg(frameBgId);
+
+function renderFrameBg() {
+  $("#frameBg").innerHTML = Shorts.FRAME_BGS.map((b) => `
+    <button type="button" class="swatch ${b.aurora ? "aurora" : ""} ${frameBgId === b.id ? "on" : ""}" data-bg="${b.id}" title="${b.name}"
+      ${b.color ? `style="background:${b.color}"` : ""}><small>${b.name}</small></button>`).join("");
+  $$("[data-bg]").forEach((btn) => btn.addEventListener("click", () => {
+    frameBgId = btn.dataset.bg;
+    Shorts.setFrameBg(frameBgId);
+    try { localStorage.setItem("ariapet.frameBg", frameBgId); } catch {}
+    renderFrameBg();
+    if (!player) showPoster();          // 재생 중이 아니면 포스터를 새 바탕으로 다시 그림
+  }));
+}
+
 // ── 3단계: 미리보기·만들기 ────────────────────────────
 const stage = $("#stage");
 const sctx = stage.getContext("2d");
@@ -170,6 +188,7 @@ $("#toMake").addEventListener("click", () => {
   $("#barFill").style.width = "0";
   go(3);
   renderMusic();
+  renderFrameBg();
   showPoster();
 });
 
