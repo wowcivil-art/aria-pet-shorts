@@ -66,6 +66,12 @@
     <!-- 3단계: 미리보기·만들기 -->
     <section class="card" data-step="3" hidden>
       <h2>3. 미리 보고 만들기</h2>
+
+      <div class="field">배경음악 <span class="opt">(고른 곡이 미리보기와 영상에 그대로 들어갑니다)</span>
+        <div class="music" id="music"></div>
+        <input id="musicFile" type="file" accept="audio/*" hidden>
+      </div>
+
       <canvas id="stage" class="stage" width="720" height="1280"></canvas>
       <div class="bar"><div id="barFill"></div></div>
       <div class="row">

@@ -104,6 +104,58 @@ function captions() {
   };
 }
 
+// ── 3단계: 배경음악 고르기 ────────────────────────────
+let music = { id: "piano" };      // { id, buffer?(내 파일일 때), name?(파일 이름) }
+let stopListen = null;            // 들어보기 멈추는 함수
+try { const saved = localStorage.getItem("ariapet.music"); if (saved && saved !== "file") music.id = saved; } catch {}
+
+function stopListening() {
+  stopListen?.(); stopListen = null;
+  $$("[data-listen]").forEach((b) => (b.textContent = "▶ 들어보기"));
+}
+
+function renderMusic() {
+  $("#music").innerHTML = Shorts.MUSIC.map((m) => `
+    <label class="track ${music.id === m.id ? "on" : ""}">
+      <input type="radio" name="music" value="${m.id}" ${music.id === m.id ? "checked" : ""}>
+      <span class="name">${m.name}<small>${m.id === "file" ? (music.name || m.desc) : m.desc}</small></span>
+      ${m.id === "file" ? `<button type="button" class="listen" data-pick>${music.buffer ? "바꾸기" : "파일 고르기"}</button>` : ""}
+      ${m.id !== "none" ? `<button type="button" class="listen" data-listen="${m.id}">▶ 들어보기</button>` : ""}
+    </label>`).join("");
+
+  $$('input[name="music"]').forEach((r) => r.addEventListener("change", () => {
+    stopListening();
+    if (r.value === "file" && !music.buffer) { $("#musicFile").click(); renderMusic(); return; }
+    music.id = r.value;
+    try { localStorage.setItem("ariapet.music", music.id); } catch {}
+    renderMusic();
+  }));
+  $$("[data-pick]").forEach((b) => b.addEventListener("click", (e) => { e.preventDefault(); $("#musicFile").click(); }));
+  $$("[data-listen]").forEach((b) => b.addEventListener("click", (e) => {
+    e.preventDefault();
+    const id = b.dataset.listen;
+    if (stopListen && b.textContent.startsWith("■")) { stopListening(); return; }
+    stopListening();
+    if (id === "file" && !music.buffer) { $("#musicFile").click(); return; }
+    player?.stop();
+    const stop = Shorts.previewMusic(id === "file" ? music : { id }, 8);
+    stopListen = () => stop();
+    b.textContent = "■ 멈추기";
+    setTimeout(() => { if (b.textContent.startsWith("■")) stopListening(); }, 8300);
+  }));
+}
+
+$("#musicFile").addEventListener("change", async (e) => {
+  const f = e.target.files[0];
+  e.target.value = "";
+  if (!f) { renderMusic(); return; }
+  try {
+    const buffer = await Shorts.decodeMusic(f);
+    music = { id: "file", buffer, name: `${f.name} (${Math.round(buffer.duration)}초${buffer.duration < Shorts.TOTAL ? ", 모자라면 반복" : ", 앞 30초"})` };
+  } catch { alert(`${f.name} 파일을 열 수 없습니다. MP3·M4A·WAV 를 써 주세요.`); }
+  renderMusic();
+});
+
 // ── 3단계: 미리보기·만들기 ────────────────────────────
 const stage = $("#stage");
 const sctx = stage.getContext("2d");
@@ -117,6 +169,7 @@ $("#toMake").addEventListener("click", () => {
   $("#download").hidden = $("#share").hidden = true;
   $("#barFill").style.width = "0";
   go(3);
+  renderMusic();
   showPoster();
 });
 
@@ -127,7 +180,8 @@ function setBusy(busy) {
 
 $("#preview").addEventListener("click", async () => {
   if (player) { player.stop(); return; }
-  player = Shorts.playShorts(stage, media, captions(), { onTime: progress });
+  stopListening();
+  player = Shorts.playShorts(stage, media, captions(), { onTime: progress, music });
   player.previewing = true;
   $("#preview").textContent = "■ 멈추기";
   setBusy(true);
@@ -144,7 +198,8 @@ $("#make").addEventListener("click", async () => {
     return;
   }
   $("#download").hidden = $("#share").hidden = true;
-  player = Shorts.playShorts(stage, media, captions(), { record: true, onTime: progress });
+  stopListening();
+  player = Shorts.playShorts(stage, media, captions(), { record: true, onTime: progress, music });
   setBusy(true);
   $("#makeHint").textContent = "녹화 중입니다… 30초 동안 이 화면을 켜 두세요.";
   const result = await player.done;
