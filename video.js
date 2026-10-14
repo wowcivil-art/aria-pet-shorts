@@ -381,8 +381,8 @@ function drawPalaceFrame(ctx) {
   ctx.strokeStyle = GOLD.light; ctx.lineWidth = 1; ctx.strokeRect(S - 7, T - 7, W - 2 * S + 14, H - T - B + 14);
   // 바깥 테두리 금선
   ctx.strokeStyle = GOLD.mid; ctx.lineWidth = 4; ctx.strokeRect(2, 2, W - 4, H - 4);
-  // 위: 구슬띠 + 그리핀 + 왕관
-  drawEggBand(ctx, 12, W - 12, 12, 20);
+  // 위: 아리아펫 로고 줄 + 그리핀 + 왕관
+  drawLogoRow(ctx, 12, W - 12, 22, 30, 14);
   drawGriffin(ctx, W / 2 - 150, T - 28, false, 1.05);
   drawGriffin(ctx, W / 2 + 150, T - 28, true, 1.05);
   drawCrown(ctx, W / 2, T - 30, 96, 56);
